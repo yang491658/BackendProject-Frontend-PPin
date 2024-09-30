@@ -9,7 +9,7 @@ const MyCalendar = () => {
 
   return (
     <div className="calendar-container">
-      <h1>수정 테스트2</h1>
+      <h1>왜 풀 리퀘스트 안 뜸?</h1>
       <Calendar onChange={setDate} value={date} />
       <p>선택한 날짜: {date.toDateString()}</p>
     </div>
