@@ -1,0 +1,6 @@
+/* src/components/Mailbox.css */
+.mailbox-container {
+  background-color: greenyellow;
+  padding: 10px;
+  border-radius: 8px;
+}
