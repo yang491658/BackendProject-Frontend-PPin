@@ -1,0 +1,6 @@
+/* src/components/Board.css */
+.board-container {
+  background-color: purple;
+  padding: 10px;
+  border-radius: 8px;
+}

@@ -1,0 +1,6 @@
+/* src/components/Profile.css */
+.profile-container {
+  background-color: rgb(81, 109, 230);
+  padding: 10px;
+  border-radius: 8px;
+}

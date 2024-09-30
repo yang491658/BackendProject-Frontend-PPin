@@ -1,0 +1,30 @@
+/* src/index.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.layout {
+  background: #f0f0f0;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.widget {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.widget-header {
+  cursor: move;
+  cursor: grab;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.widget-header-locked {
+  cursor: default; /* 잠금 상태에서 기본 커서로 설정 */
+}
