@@ -1,14 +1,18 @@
 // src/App.js
 import React from 'react';
-import Dashboard from './Dashboard';
-import './App.css'; // App 컴포넌트 전역 CSS 임포트
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
 
 const App = () => {
   return (
-    <div>
-      <h1 style={{ textAlign: 'center', padding: '20px 0' }}>나의 대시보드</h1>
-      <Dashboard />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        {/* 필요에 따라 다른 라우트를 추가하세요 */}
+      </Routes>
+    </Router>
   );
 };
 
