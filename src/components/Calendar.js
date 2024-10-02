@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import './Calendar.css'; // CSS 파일 임포트
+import '../styles/Calendar.css'; // CSS 파일 임포트
 import Modal from 'react-modal';
 import axios from 'axios';
 

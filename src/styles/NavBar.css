@@ -1,0 +1,64 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 5vw; /* 너비 5vw로 설정 */
+  height: 100vh;
+  background-color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  transition: width 0.3s ease, opacity 0.3s ease; /* 펼침/숨김 효과 */
+}
+
+.navbar.collapsed {
+  width: 0; /* 네비바가 숨겨졌을 때 너비 0 */
+  opacity: 0; /* 네비바가 사라질 때 투명도 */
+  pointer-events: none; /* 숨겨졌을 때 클릭 이벤트 비활성화 */
+}
+
+.nav-items {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 아이콘들을 세로로 중앙에 배치 */
+}
+
+.nav-item {
+  width: 100%;
+  padding: 15px 0; /* 좌우 패딩을 0으로 */
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 아이콘을 가로 중앙에 배치 */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.nav-item:hover {
+  background-color: #444;
+}
+
+.nav-icon {
+  font-size: 1.5em; /* 아이콘 크기 조정 */
+  color: #aaa; /* 아이콘 기본 색상 설정 */
+}
+
+.hamburger-icon {
+  position: fixed; /* 바디에 고정된 위치로 설정 */
+  top: 20px; /* 상단에서의 위치 */
+  left: 20px; /* 왼쪽에서의 위치 */
+  font-size: 2em; /* 아이콘 크기 */
+  color: #aaa; /* 햄버거 버튼 색상 설정 */
+  cursor: pointer;
+  z-index: 10; /* 네비게이션 바 위에 있도록 설정 */
+}
+
+.hamburger-icon:hover {
+  color: #e9e8e8;
+}

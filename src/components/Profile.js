@@ -1,6 +1,6 @@
 // src/components/Profile.js
 import React, { useState } from 'react';
-import './Profile.css';
+import '../styles/Profile.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState({
