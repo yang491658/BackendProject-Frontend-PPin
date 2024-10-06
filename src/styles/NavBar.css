@@ -1,64 +1,113 @@
+/* 오버레이 기본 스타일 */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* 네비게이션 바 스타일 */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 5vw; /* 너비 5vw로 설정 */
-  height: 100vh;
+  width: 60px;
+  height: 100%;
   background-color: #333;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
-  transition: width 0.3s ease, opacity 0.3s ease; /* 펼침/숨김 효과 */
+  transition: width 0.3s ease;
+  z-index: 1000;
 }
 
 .navbar.collapsed {
-  width: 0; /* 네비바가 숨겨졌을 때 너비 0 */
-  opacity: 0; /* 네비바가 사라질 때 투명도 */
-  pointer-events: none; /* 숨겨졌을 때 클릭 이벤트 비활성화 */
+  width: 60px;
 }
 
+.navbar:not(.collapsed) {
+  width: 150px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    width: 50px;
+  }
+
+  .navbar.collapsed {
+    width: 50px;
+  }
+
+  .navbar:not(.collapsed) {
+    width: 120px;
+  }
+}
+
+/* 네비게이션 아이템 스타일 */
 .nav-items {
   list-style: none;
   padding: 0;
-  width: 100%;
-  flex-grow: 1;
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* 아이콘들을 세로로 중앙에 배치 */
 }
 
 .nav-item {
-  width: 100%;
-  padding: 15px 0; /* 좌우 패딩을 0으로 */
-  color: #aaa;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* 아이콘을 가로 중앙에 배치 */
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin: 20px 0;
 }
 
-.nav-item:hover {
-  background-color: #444;
+.nav-link, .logout-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  width: 100%;
+}
+
+.nav-name {
+  font-size: 15px;
+  margin-left: 5px;
+  transition: color 0.3s ease;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  font-size: 24px;
 }
 
 .nav-icon {
-  font-size: 1.5em; /* 아이콘 크기 조정 */
-  color: #aaa; /* 아이콘 기본 색상 설정 */
+  font-size: 24px;
+  color: white;
 }
 
-.hamburger-icon {
-  position: fixed; /* 바디에 고정된 위치로 설정 */
-  top: 20px; /* 상단에서의 위치 */
-  left: 20px; /* 왼쪽에서의 위치 */
-  font-size: 2em; /* 아이콘 크기 */
-  color: #aaa; /* 햄버거 버튼 색상 설정 */
-  cursor: pointer;
-  z-index: 10; /* 네비게이션 바 위에 있도록 설정 */
+/* 햄버거 버튼과 로그아웃 버튼 호버 스타일 */
+.nav-item:hover .nav-icon,
+.nav-item:hover .nav-name {
+  color: gray; /* 아이콘과 텍스트가 동시에 회색으로 변경 */
 }
 
-.hamburger-icon:hover {
-  color: #e9e8e8;
+/* 추가적으로 햄버거 버튼과 로그아웃 버튼도 호버 적용 */
+.nav-icon:hover {
+  color: gray;
+  transition: 0.3s ease;
+}
+
+/* 로그아웃 버튼과 햄버거 버튼이 가운데 정렬되도록 */
+.logout {
+  margin-top: auto;
+}
+
+.hidden {
+  display: none;
 }
