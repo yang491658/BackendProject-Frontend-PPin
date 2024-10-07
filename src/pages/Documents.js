@@ -7,11 +7,33 @@ const Documents = () => {
   const [content, setContent] = useState('');
   const [department, setDepartment] = useState([]);
   const [position, setPosition] = useState([]);
+  const [file, setFile] = useState(null); // 파일 상태 추가
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]); // 첫 번째 파일만 저장
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 여기에서 문서 작성 로직을 추가
-    console.log("문서 작성:", { title, content, department, position });
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('department', department);
+    formData.append('position', position);
+    formData.append('file', file); // 파일을 FormData에 추가
+
+    // 서버로 파일과 다른 데이터를 전송하는 API 호출
+    fetch('/api/documents', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('문서 작성 완료:', data);
+      })
+      .catch((error) => {
+        console.error('문서 작성 중 오류 발생:', error);
+      });
   };
 
   return (
@@ -49,6 +71,10 @@ const Documents = () => {
               <option value="대리">대리</option>
               <option value="사원">사원</option>
             </select>
+          </div>
+          <div>
+            <label>문서 첨부:</label>
+            <input type="file" onChange={handleFileChange} />
           </div>
           <button className="documents-submit-button" type="submit">저장</button>
         </form>
