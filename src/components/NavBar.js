@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { FaCalendarAlt, FaUser, FaHome, FaCog, FaInfoCircle, FaExchangeAlt, FaSignOutAlt, FaBars, FaFileAlt, FaDollarSign } from 'react-icons/fa'; // 문서함 아이콘 추가
-import { Link } from 'react-router-dom';
+import { FaCalendarAlt, FaUser, FaHome, FaCog, FaInfoCircle, FaSignOutAlt, FaBars, FaFileAlt, FaDollarSign } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/NavBar.css';
 
-const NavBar = ({ onLogout }) => {
+const NavBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const navigate = useNavigate();  // useNavigate 훅을 NavBar 내부에서 호출
 
   const toggleNavbar = () => {
     setIsCollapsed(!isCollapsed);
@@ -12,6 +13,14 @@ const NavBar = ({ onLogout }) => {
     if (overlay) {
       overlay.classList.toggle('active', !isCollapsed);
     }
+  };
+
+  const handleLogout = () => {
+    // 로그아웃 로직 추가 (예: 세션 삭제, 토큰 제거)
+    console.log('Logging out...');
+    
+    // 로그아웃 후 로그인 페이지로 리디렉션
+    navigate('/');
   };
 
   return (
@@ -47,9 +56,9 @@ const NavBar = ({ onLogout }) => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/users" className="nav-link">
+            <Link to="/attendance" className="nav-link">
               <FaUser className="nav-icon" />
-              <span className={`nav-name ${isCollapsed ? 'hidden' : ''}`}>인사관리</span>
+              <span className={`nav-name ${isCollapsed ? 'hidden' : ''}`}>근태</span>
             </Link>
           </li>
           <li className="nav-item">
@@ -66,13 +75,7 @@ const NavBar = ({ onLogout }) => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/exchangeRate" className="nav-link">
-              <FaExchangeAlt className="nav-icon" />
-              <span className={`nav-name ${isCollapsed ? 'hidden' : ''}`}>환율</span>
-            </Link>
-          </li>
-          <li className="nav-item">
-            <button className="logout-button" onClick={onLogout}>
+            <button className="logout-button" onClick={handleLogout}>
               <FaSignOutAlt className="nav-icon" />
               <span className={`nav-name ${isCollapsed ? 'hidden' : ''}`}>로그아웃</span>
             </button>
