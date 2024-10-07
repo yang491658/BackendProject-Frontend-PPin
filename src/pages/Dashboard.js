@@ -13,6 +13,7 @@ import Mailbox from '../components/Mailbox';
 import Profile from '../components/Profile';
 import WeatherWidget from '../components/WeatherWidget';
 import ExchangeRateWidget from '../components/ExchangeRateWidget';
+import MySalaryWidget from '../components/MySalaryWidget';
 
 import '../styles/Dashboard.css';
 import '../styles/NavBar.css';
@@ -29,22 +30,7 @@ const defaultLayouts = {
     { i: 'weather', x: 0, y: 3, w: 3, h: 3 },
     { i: 'exchangeRate', x: 3, y: 3, w: 3, h: 3 },
   ],
-  md: [
-    { i: 'calendar', x: 0, y: 0, w: 6, h: 3 },
-    { i: 'board', x: 6, y: 0, w: 6, h: 3 },
-    { i: 'mailbox', x: 0, y: 3, w: 6, h: 3 },
-    { i: 'profile', x: 6, y: 3, w: 6, h: 3 },
-    { i: 'weather', x: 0, y: 6, w: 6, h: 3 },
-    { i: 'exchangeRate', x: 6, y: 6, w: 6, h: 3 },
-  ],
-  sm: [
-    { i: 'calendar', x: 0, y: 0, w: 12, h: 3 },
-    { i: 'board', x: 0, y: 3, w: 12, h: 3 },
-    { i: 'mailbox', x: 0, y: 6, w: 12, h: 3 },
-    { i: 'profile', x: 0, y: 9, w: 12, h: 3 },
-    { i: 'weather', x: 0, y: 12, w: 12, h: 3 },
-    { i: 'exchangeRate', x: 0, y: 15, w: 12, h: 3 },
-  ],
+  // 다른 해상도에 대한 레이아웃 정의...
 };
 
 const availableWidgets = [
@@ -54,6 +40,7 @@ const availableWidgets = [
   { id: 'profile', name: '프로필', component: <Profile /> },
   { id: 'weather', name: '날씨', component: <WeatherWidget /> },
   { id: 'exchangeRate', name: '환율', component: <ExchangeRateWidget /> },
+  { id: 'mySalary', name: '내 급여', component: <MySalaryWidget /> },
 ];
 
 const Dashboard = () => {
@@ -70,7 +57,7 @@ const Dashboard = () => {
   
   const [isLocked, setIsLocked] = useState(false);
   const [isWidgetSelectorOpen, setIsWidgetSelectorOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false); // 추가된 상태
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [userDepartment, setUserDepartment] = useState("OO부서");
   const [userRole, setUserRole] = useState("OO admin");
 
@@ -79,7 +66,7 @@ const Dashboard = () => {
   };
 
   const toggleNavbar = () => {
-    setIsCollapsed(!isCollapsed); // 네비게이션 바 상태 토글
+    setIsCollapsed(!isCollapsed);
   };
 
   const openWidgetSelector = () => setIsWidgetSelectorOpen(true);
@@ -127,16 +114,13 @@ const Dashboard = () => {
   }, [activeWidgets]);
 
   const handleLogout = () => {
-    // 로그아웃 로직 (필요에 따라 세션 삭제 등)
     navigate('/'); // 로그인 페이지로 이동
   };
 
   return (
     <div className="dashboard-container">
-      {/* 네비게이션 바 */}
       <NavBar onLogout={handleLogout} toggleNavbar={toggleNavbar} isCollapsed={isCollapsed} />
       
-      {/* 대시보드 콘텐츠 */}
       <div className={`dashboard-content ${isCollapsed ? 'collapsed' : ''}`}>
         <div className="user-info">
           <h2>{userDepartment} {userRole}님</h2>

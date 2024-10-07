@@ -1,5 +1,3 @@
-/* src/components/Calendar.css */
-
 .calendar-container {
   padding: 20px;
   background-color: aqua;
@@ -66,7 +64,6 @@
   display: none !important;
 }
 
-/* 캘린더 제목 스타일 (필요 시 커스터마이징 가능) */
 .react-calendar__navigation__label {
   font-size: 1.2em;
   font-weight: bold;
