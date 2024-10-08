@@ -116,88 +116,91 @@ const Dashboard = () => {
   const handleLogout = () => {
     navigate('/'); // 로그인 페이지로 이동
   };
-
-  return (
-    <div className="dashboard-container">
-      <NavBar onLogout={handleLogout} toggleNavbar={toggleNavbar} isCollapsed={isCollapsed} />
-      
-      <div className={`dashboard-content ${isCollapsed ? 'collapsed' : ''}`}>
-        <div className="user-info">
-          <h2>{userDepartment} {userRole}님</h2>
-        </div>
-
-        <div className="top-buttons">
-          <button
-            className="lock-button"
-            onClick={toggleLock}
-            aria-label={isLocked ? 'Unlock Widgets' : 'Lock Widgets'}
-          >
-            {isLocked ? <FaLock /> : <FaUnlock />}
+  
+    return (
+      <div className="dashboard-container">
+        <NavBar onLogout={handleLogout} toggleNavbar={toggleNavbar} isCollapsed={isCollapsed} />
+        
+        <div className={`dashboard-content ${isCollapsed ? 'collapsed' : ''}`}>
+          {/* Header 추가 */}
+          <div className="dashboard-header">
+            <div className="user-info">
+              <h2>{userDepartment} {userRole}님</h2>
+            </div>
+            <div className="top-buttons">
+              <button
+                className="lock-button"
+                onClick={toggleLock}
+                aria-label={isLocked ? 'Unlock Widgets' : 'Lock Widgets'}
+              >
+                {isLocked ? <FaLock /> : <FaUnlock />}
+              </button>
+            </div>
+          </div>
+  
+          <button className="add-widget-button" onClick={openWidgetSelector}>
+            위젯 추가
           </button>
-        </div>
-
-        <button className="add-widget-button" onClick={openWidgetSelector}>
-          위젯 추가
-        </button>
-
-        <Modal
-          isOpen={isWidgetSelectorOpen}
-          onRequestClose={closeWidgetSelector}
-          contentLabel="위젯 선택"
-          className="widget-modal"
-          overlayClassName="widget-modal-overlay"
-        >
-          <h2>추가할 위젯을 선택하세요</h2>
-          <ul>
-            {availableWidgets.map(widget => (
-              !activeWidgets.includes(widget.id) && (
-                <li key={widget.id}>
-                  <button onClick={() => handleAddWidget(widget.id)}>
-                    {widget.name}
-                  </button>
-                </li>
-              )
-            ))}
-          </ul>
-          <button onClick={closeWidgetSelector}>닫기</button>
-        </Modal>
-
-        <ResponsiveGridLayout
-          className="layout"
-          layouts={layouts}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-          rowHeight={100}
-          onLayoutChange={onLayoutChange}
-          draggableHandle=".drag-handle"
-          isDraggable={!isLocked}
-          isResizable={!isLocked}
-        >
-          {activeWidgets.map(widgetId => {
-            const widget = availableWidgets.find(w => w.id === widgetId);
-            return (
-              <div key={widget.id} className="widget">
-                <div className={`widget-header ${isLocked ? 'widget-header-locked' : ''}`}>
-                  <span className="drag-handle">☰</span>
-                  <span className="widget-title">{widget.name}</span>
-                  {!isLocked && (
-                    <button
-                      className="remove-widget-button"
-                      onClick={() => handleRemoveWidget(widget.id)}
-                      aria-label="Remove Widget"
-                    >
-                      ×
+  
+          {/* Modal 및 GridLayout 유지 */}
+          <Modal
+            isOpen={isWidgetSelectorOpen}
+            onRequestClose={closeWidgetSelector}
+            contentLabel="위젯 선택"
+            className="widget-modal"
+            overlayClassName="widget-modal-overlay"
+          >
+            <h2>추가할 위젯을 선택하세요</h2>
+            <ul>
+              {availableWidgets.map(widget => (
+                !activeWidgets.includes(widget.id) && (
+                  <li key={widget.id}>
+                    <button onClick={() => handleAddWidget(widget.id)}>
+                      {widget.name}
                     </button>
-                  )}
+                  </li>
+                )
+              ))}
+            </ul>
+            <button onClick={closeWidgetSelector}>닫기</button>
+          </Modal>
+  
+          <ResponsiveGridLayout
+            className="layout"
+            layouts={layouts}
+            breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+            cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+            rowHeight={100}
+            onLayoutChange={onLayoutChange}
+            draggableHandle=".drag-handle"
+            isDraggable={!isLocked}
+            isResizable={!isLocked}
+          >
+            {activeWidgets.map(widgetId => {
+              const widget = availableWidgets.find(w => w.id === widgetId);
+              return (
+                <div key={widget.id} className="widget">
+                  <div className={`widget-header ${isLocked ? 'widget-header-locked' : ''}`}>
+                    <span className="drag-handle">☰</span>
+                    <span className="widget-title">{widget.name}</span>
+                    {!isLocked && (
+                      <button
+                        className="remove-widget-button"
+                        onClick={() => handleRemoveWidget(widget.id)}
+                        aria-label="Remove Widget"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                  {widget.component}
                 </div>
-                {widget.component}
-              </div>
-            );
-          })}
-        </ResponsiveGridLayout>
+              );
+            })}
+          </ResponsiveGridLayout>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 export default Dashboard;
