@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../styles/AttendancePage.css'; // CSS 파일을 가져옵니다.
 import NavBar from '../components/NavBar';
 
@@ -6,33 +7,20 @@ const AttendanceTable = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [departmentFilter, setDepartmentFilter] = useState('all'); // 부서 필터 상태
   const [showMissingAttendance, setShowMissingAttendance] = useState(false); // 출퇴근 기록 없는 사람 필터 상태
+  const [employees, setEmployees] = useState([]); // 사원 목록 상태 추가
 
-  // 임의의 데이터 생성 (부서 추가)
-  const employees = [
-    { name: '김철수', department: '영업팀', attendance: generateRandomAttendance() },
-    { name: '이영희', department: '인사관리팀', attendance: generateRandomAttendance() },
-    { name: '박지민', department: '인사기획팀', attendance: generateRandomAttendance() },
-  ];
+  useEffect(() => {
+    const apiUrl = process.env.REACT_APP_API_URL || '';
 
-  function generateRandomAttendance() {
-    const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate(); // 해당 월의 일 수
-    const attendance = {};
-    const today = new Date();
-
-    for (let i = 1; i <= daysInMonth; i++) {
-      const currentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
-      // 미래의 날짜에는 공란 처리
-      if (currentDay > today) {
-        attendance[i] = { clockIn: '', clockOut: '' }; // 미래의 날짜는 공란
-      } else {
-        // 무작위로 출근 및 퇴근 시간을 생성
-        const clockIn = Math.random() < 0.5 ? '-' : `${Math.floor(Math.random() * 10) + 9}:00`;
-        const clockOut = Math.random() < 0.5 ? '-' : `${Math.floor(Math.random() * 10) + 17}:00`;
-        attendance[i] = { clockIn, clockOut };
-      }
-    }
-    return attendance;
-  }
+    // 사원 목록 API 호출
+    axios.get(`${apiUrl}/employee/all`)
+      .then(response => {
+        setEmployees(response.data); // 응답 데이터로 사원 목록 설정
+      })
+      .catch(error => {
+        console.error('사원 데이터를 가져오는 중 오류가 발생했습니다!', error);
+      });
+  }, []); // 컴포넌트가 마운트될 때 API 호출
 
   const handlePreviousMonth = () => {
     setCurrentDate((prevDate) => {
