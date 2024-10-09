@@ -8,6 +8,7 @@ const AttendanceTable = () => {
   const [departmentFilter, setDepartmentFilter] = useState('all'); // 부서 필터 상태
   const [showMissingAttendance, setShowMissingAttendance] = useState(false); // 출퇴근 기록 없는 사람 필터 상태
   const [employees, setEmployees] = useState([]); // 사원 목록 상태 추가
+  const [error, setError] = useState(null); // 오류 상태 추가
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL || '';
@@ -15,10 +16,17 @@ const AttendanceTable = () => {
     // 사원 목록 API 호출
     axios.get(`${apiUrl}/employee/all`)
       .then(response => {
-        setEmployees(response.data); // 응답 데이터로 사원 목록 설정
+        // 응답 데이터가 배열인지 확인
+        if (Array.isArray(response.data)) {
+          setEmployees(response.data); // 응답 데이터로 사원 목록 설정
+        } else {
+          console.error('직원 데이터는 배열이 아닙니다:', response.data);
+          setEmployees([]); // 빈 배열로 설정하여 이후 필터링에서 에러 방지
+        }
       })
       .catch(error => {
         console.error('사원 데이터를 가져오는 중 오류가 발생했습니다!', error);
+        setError('사원 데이터를 가져오는 중 오류가 발생했습니다.'); // 오류 메시지 설정
       });
   }, []); // 컴포넌트가 마운트될 때 API 호출
 
@@ -69,6 +77,9 @@ const AttendanceTable = () => {
     <div className="attendance-table-container">
       <h2 className="attendance-table-title">전직원 출퇴근 기록</h2>
       <NavBar />
+      
+      {error && <p className="error-message">{error}</p>} {/* 오류 메시지 표시 */}
+
       <div className="attendance-table-navigation">
         <button onClick={handlePreviousMonth}>이전</button>
         <span>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</span>
@@ -115,27 +126,33 @@ const AttendanceTable = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees.map((employee, index) => (
-            <tr key={index} className="attendance-table-row">
-              <td className="attendance-table-cell">{employee.name}</td>
-              {[...Array(daysInMonth)].map((_, dayIndex) => {
-                const { clockIn, clockOut } = employee.attendance[dayIndex + 1] || {};
-                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayIndex + 1);
-                const isPastDate = date < new Date(); // 현재 날짜 이전인지 체크
-                const isToday = date.toDateString() === today.toDateString(); // 오늘 날짜인지 체크
-                return (
-                  <td key={dayIndex} className={`attendance-table-cell ${isToday ? 'today-cell' : ''}`}>
-                    <div className={isPastDate && clockIn === '-' ? 'attendance-missing' : ''}>
-                      {clockIn === '' ? '' : clockIn === '-' ? '-' : clockIn}
-                    </div>
-                    <div className={isPastDate && clockOut === '-' ? 'attendance-missing' : ''}>
-                      {clockOut === '' ? '' : clockOut === '-' ? '-' : clockOut}
-                    </div>
-                  </td>
-                );
-              })}
+          {filteredEmployees.length > 0 ? (
+            filteredEmployees.map((employee, index) => (
+              <tr key={index} className="attendance-table-row">
+                <td className="attendance-table-cell">{employee.name}</td>
+                {[...Array(daysInMonth)].map((_, dayIndex) => {
+                  const { clockIn, clockOut } = employee.attendance[dayIndex + 1] || {};
+                  const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayIndex + 1);
+                  const isPastDate = date < new Date(); // 현재 날짜 이전인지 체크
+                  const isToday = date.toDateString() === today.toDateString(); // 오늘 날짜인지 체크
+                  return (
+                    <td key={dayIndex} className={`attendance-table-cell ${isToday ? 'today-cell' : ''}`}>
+                      <div className={isPastDate && clockIn === '-' ? 'attendance-missing' : ''}>
+                        {clockIn === '' ? '' : clockIn === '-' ? '-' : clockIn}
+                      </div>
+                      <div className={isPastDate && clockOut === '-' ? 'attendance-missing' : ''}>
+                        {clockOut === '' ? '' : clockOut === '-' ? '-' : clockOut}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={daysInMonth + 1} className="attendance-table-cell">출퇴근 기록이 없습니다.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

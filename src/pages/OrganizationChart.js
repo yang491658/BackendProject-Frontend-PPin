@@ -10,19 +10,25 @@ const OrganizationChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const employeeResponse = await axios.get('/employee/all');
-        const companyResponse = await axios.get('/employee/companies');
-
+        const employeeResponse = await axios.get('http://localhost:8080/employee/all');
+        const companyResponse = await axios.get('http://localhost:8080/employee/companies');
+    
         console.log('Employee Data:', employeeResponse.data);
         console.log('Company Data:', companyResponse.data);
-
-        setEmployees(employeeResponse.data);
+    
+        if (Array.isArray(employeeResponse.data)) {
+          setEmployees(employeeResponse.data);
+        } else {
+          console.error('직원 데이터는 배열이 아닙니다:', employeeResponse.data);
+          setEmployees([]); // 빈 배열로 설정하여 이후 필터링에서 에러 방지
+        }
+    
         setCompanies(companyResponse.data);
       } catch (error) {
         console.error('데이터를 가져오는 중 오류가 발생했습니다!', error);
       }
     };
-
+  
     fetchData();
   }, []);
 
