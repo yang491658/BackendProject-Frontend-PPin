@@ -1,11 +1,69 @@
 // src/components/MySalaryWidget.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const MySalaryWidget = () => {
+  const [salary, setSalary] = useState(0);
+  const [workTime, setWorkTime] = useState('데이터 준비 중입니다.');
+  const [userName, setUserName] = useState(''); // 사용자 이름 상태 추가
+
+  useEffect(() => {
+    const getSalaryInfo = async () => {
+      const token = localStorage.getItem('jwt'); // JWT 토큰 가져오기
+      const empID = localStorage.getItem('empID'); // empID 가져오기
+
+      try {
+        // 1. 직원 정보를 가져오기
+        const employeeResponse = await axios.get(`http://localhost:8080/employee/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log('직원 정보:', employeeResponse.data); // 직원 정보 콘솔 로그
+
+        const currentUser = employeeResponse.data.find(emp => emp.empID === empID);
+
+        if (currentUser) {
+          const { companyId, name } = currentUser; // 이름 추가로 가져오기
+          setUserName(name); // 사용자 이름 설정
+
+          // 2. 회사 정보를 가져오기
+          const companyResponse = await axios.get(`http://localhost:8080/employee/companies`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          console.log('회사 정보:', companyResponse.data); // 회사 정보 콘솔 로그
+
+          const companyData = companyResponse.data.find(company => company.cnb === companyId);
+
+          if (companyData) {
+            setSalary(companyData.baseSalary); // base_salary 설정
+            console.log('총 급여:', companyData.baseSalary); // 총 급여 콘솔 로그
+          } else {
+            console.error('회사를 찾을 수 없습니다.');
+          }
+        } else {
+          console.error('현재 사용자를 찾을 수 없습니다.');
+        }
+      } catch (error) {
+        console.error('급여 정보를 가져오는 중 오류 발생:', error.response ? error.response.data : error.message);
+      }
+    };
+
+    getSalaryInfo(); 
+  }, []);
+
   return (
-    <div>
-      <h3>내 급여 정보</h3>
-      {/* 급여 관련 정보 출력 */}
+    <div className="my-salary-page">
+      <div className="salary-content">
+        <h1>급여 & 근태 정보</h1>
+        <p><strong>이름:</strong> {userName}</p> {/* 이름 표시 */}
+        <p>월급: {salary}원</p>
+        <p>근무 시간: {workTime}</p> {/* 에러 메시지로 대체 */}
+      </div>
     </div>
   );
 };
