@@ -8,6 +8,7 @@ import CalendarPage from './pages/CalendarPage';
 import MySalaryPage from './pages/MySalaryPage';
 import OrganizationChart from './pages/OrganizationChart';
 import SettingsPage from './pages/SettingPage';
+import AttendancePage from './pages/AttendancePage';
 
 import './App.css'; 
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/organization" element={<OrganizationChart />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
         {/* 필요에 따라 다른 라우트를 추가하세요 */}
       </Routes>
     </Router>

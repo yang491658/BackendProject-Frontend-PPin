@@ -20,24 +20,24 @@ const CalendarComponent = () => {
   Modal.setAppElement('#root');
 
   // 일정 데이터 가져오기
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  // useEffect(() => {
+  //   fetchEvents();
+  // }, []);
 
-  const fetchEvents = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/events');
-      setEvents(response.data);
-    } catch (error) {
-      console.error('일정을 가져오는 데 실패했습니다:', error);
-    }
-  };
+  // const fetchEvents = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:8080/api/events');
+  //     setEvents(response.data);
+  //   } catch (error) {
+  //     console.error('일정을 가져오는 데 실패했습니다:', error);
+  //   }
+  // };
 
   // 일정 추가
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/events', newEvent);
+      const response = await axios.post('http://localhost:8080/api/events', newEvent);
       setEvents([...events, response.data]);
       setModalIsOpen(false);
       setNewEvent({ title: '', description: '', date: new Date() });

@@ -32,6 +32,16 @@ body {
   margin-left: 60px !important;
 }
 
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .settings-page {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
