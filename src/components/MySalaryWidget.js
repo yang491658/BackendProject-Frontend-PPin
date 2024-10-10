@@ -24,7 +24,7 @@ const MySalaryWidget = () => {
         setUserName(name); // 사용자 이름 설정
 
         // 2. 회사 정보를 가져오기
-        const companyResponse = await axios.get(`http://localhost:8080/employee/${empID}`, {
+        const companyResponse = await axios.get(`http://localhost:8080/employee/companies`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
