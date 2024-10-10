@@ -6,12 +6,22 @@ import NavBar from '../components/NavBar';
 const OrganizationChart = () => {
   const [employees, setEmployees] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const employeeResponse = await axios.get('http://localhost:8080/employee/all');
-        const companyResponse = await axios.get('http://localhost:8080/employee/companies');
+        const jwtToken = localStorage.getItem('jwt'); // 로컬 스토리지에서 JWT 가져오기
+
+        // JWT 토큰을 Authorization 헤더에 추가
+        const headers = { 
+          headers: {
+            Authorization: `Bearer ${jwtToken}` 
+          }
+        };
+
+        const employeeResponse = await axios.get('http://localhost:8080/employee/all', headers);
+        const companyResponse = await axios.get('http://localhost:8080/employee/companies', headers);
     
         console.log('Employee Data:', employeeResponse.data);
         console.log('Company Data:', companyResponse.data);
@@ -24,8 +34,10 @@ const OrganizationChart = () => {
         }
     
         setCompanies(companyResponse.data);
+        setLoading(false); // 데이터 로드가 완료되면 로딩 상태 해제
       } catch (error) {
         console.error('데이터를 가져오는 중 오류가 발생했습니다!', error);
+        setLoading(false); // 에러 발생 시에도 로딩 상태 해제
       }
     };
   
@@ -61,16 +73,8 @@ const OrganizationChart = () => {
     });
   };
 
-  const getSubordinatesExcludingInternsAndContractors = (managerId) => {
-    return getSubordinates(managerId).filter(employee => {
-      const position = getPosition(employee.companyId);
-      return position !== '인턴' && position !== '계약직';
-    });
-  };
-
   const renderEmployeeNode = (employee) => (
     <div className="employee-node" key={employee.enb}>
-      <NavBar />
       <div className="employee-info">
         <p>{employee.name}</p>
         <p>{getPosition(employee.companyId)}</p>
@@ -130,7 +134,8 @@ const OrganizationChart = () => {
 
   return (
     <div>
-      {employees.length > 0 ? renderOrganizationChart() : <p>No data available</p>}
+      <NavBar />
+      {loading ? <p>로딩 중...</p> : employees.length > 0 ? renderOrganizationChart() : <p>No data available</p>}
     </div>
   );
 };
