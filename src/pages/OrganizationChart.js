@@ -6,14 +6,12 @@ import NavBar from '../components/NavBar';
 const OrganizationChart = () => {
   const [employees, setEmployees] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jwtToken = localStorage.getItem('jwt'); // 로컬 스토리지에서 JWT 가져오기
-
-        // JWT 토큰을 Authorization 헤더에 추가
+        const jwtToken = localStorage.getItem('jwt');
         const headers = { 
           headers: {
             Authorization: `Bearer ${jwtToken}` 
@@ -22,22 +20,17 @@ const OrganizationChart = () => {
 
         const employeeResponse = await axios.get('http://localhost:8080/employee/all', headers);
         const companyResponse = await axios.get('http://localhost:8080/employee/companies', headers);
-    
-        console.log('Employee Data:', employeeResponse.data);
-        console.log('Company Data:', companyResponse.data);
-    
+
         if (Array.isArray(employeeResponse.data)) {
           setEmployees(employeeResponse.data);
         } else {
-          console.error('직원 데이터는 배열이 아닙니다:', employeeResponse.data);
-          setEmployees([]); // 빈 배열로 설정하여 이후 필터링에서 에러 방지
+          setEmployees([]);
         }
-    
+
         setCompanies(companyResponse.data);
-        setLoading(false); // 데이터 로드가 완료되면 로딩 상태 해제
+        setLoading(false);
       } catch (error) {
-        console.error('데이터를 가져오는 중 오류가 발생했습니다!', error);
-        setLoading(false); // 에러 발생 시에도 로딩 상태 해제
+        setLoading(false);
       }
     };
   
@@ -56,77 +49,81 @@ const OrganizationChart = () => {
 
   const getSubordinates = (managerId) => {
     return employees.filter(employee => {
-      const isSubordinate =
-        (managerId === 100 && employee.companyId === 201) || // CEO의 비서
-        (managerId === 100 && (employee.companyId >= 301 && employee.companyId <= 306)) || // 1팀 부서장
-        (managerId === 301 && (employee.companyId === 302)) || // 1팀 팀장
-        (managerId === 302 && (employee.companyId === 303)) || // 1팀 담당자
-        (managerId === 100 && (employee.companyId >= 401 && employee.companyId <= 406)) || // 2팀 부서장
-        (managerId === 401 && (employee.companyId === 402)) || // 2팀 팀장
-        (managerId === 402 && (employee.companyId === 403)) || // 2팀 담당자
-        (managerId === 100 && (employee.companyId >= 501 && employee.companyId <= 506)) || // 3팀 부서장
-        (managerId === 501 && (employee.companyId === 502)) || // 3팀 팀장
-        (managerId === 502 && (employee.companyId === 503)) || // 3팀 담당자
-        (managerId === 100 && (employee.companyId >= 601 && employee.companyId <= 606)); // 4팀 부서장
-
-      return isSubordinate;
+      // 각 부서별로 상사에 따른 하위 직원을 가져옴
+      return (managerId === 201 && employee.companyId === 202) ||
+        (managerId === 202 && employee.companyId === 203) ||
+        (managerId === 301 && employee.companyId === 302) ||
+        (managerId === 302 && employee.companyId === 303) ||
+        (managerId === 303 && employee.companyId === 304) ||
+        (managerId === 401 && employee.companyId === 402) ||
+        (managerId === 402 && employee.companyId === 403) ||
+        (managerId === 403 && employee.companyId === 404) ||
+        (managerId === 501 && employee.companyId === 502) ||
+        (managerId === 502 && employee.companyId === 503) ||
+        (managerId === 503 && employee.companyId === 504) ||
+        (managerId === 601 && employee.companyId === 602) ||
+        (managerId === 602 && employee.companyId === 603) ||
+        (managerId === 603 && employee.companyId === 604);
     });
   };
 
   const renderEmployeeNode = (employee) => (
-    <div className="employee-node" key={employee.enb}>
+    <div className="employee-node" key={employee.enb || employee.companyId}>
       <div className="employee-info">
         <p>{employee.name}</p>
         <p>{getPosition(employee.companyId)}</p>
         <p>{getDepartment(employee.companyId)}</p>
-        <p>전화번호: {employee.phoneNum}</p>
+        <p>번호: {employee.phoneNum || 'N/A'}</p>
       </div>
     </div>
   );
 
-  const renderDepartmentHeads = () => {
-    const departmentHeads = getSubordinates(100); // 부서장 가져오기
-    return (
-      <div className="employee-group">
-        {departmentHeads.map(renderEmployeeNode)}
-      </div>
-    );
-  };
-
-  const renderTeamLeads = (departmentHeadId) => {
-    const teamLeads = getSubordinates(departmentHeadId);
-    return (
-      <div className="team-leads-row">
-        {teamLeads.map((teamLead) => (
-          <div key={teamLead.enb}>
-            {renderEmployeeNode(teamLead)}
-            {renderEmployees(teamLead.companyId)} {/* 팀장 아래 담당자 렌더링 */}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderEmployees = (managerId) => {
-    const employeesUnderManager = getSubordinates(managerId);
-    return (
-      <div className="subordinates-row">
-        {employeesUnderManager.map(renderEmployeeNode)}
-      </div>
-    );
-  };
-
   const renderOrganizationChart = () => {
+    // employees 배열에서 CEO 정보를 가져오기
+    const ceo = employees.find(employee => employee.companyId === 100); // employees 배열에서 CEO를 찾음
+  
+    const firstRowEmployees = employees.filter(
+      employee => [201, 301, 401, 501, 601].includes(employee.companyId)
+    );
+  
     return (
       <div className="organization-chart">
-        <div className="ceo">
-          {renderEmployeeNode({ name: 'CEO', companyId: 100 })} {/* CEO 표시 */}
+        <div className="ceo-row">
+          {ceo ? renderEmployeeNode(ceo) : renderEmployeeNode({ name: 'CEO 없음', companyId: 100, phoneNum: 'N/A' })} {/* CEO 표시 */}
         </div>
-        <div className="managers-row">
-          {renderDepartmentHeads()} {/* 부서장 렌더링 */}
-        </div>
-        <div className="team-leads">
-          {getSubordinates(100).map((manager) => renderTeamLeads(manager.companyId))} {/* 팀장 렌더링 */}
+  
+        <div className="first-row">
+          {firstRowEmployees.map((firstRowEmployee) => (
+            <div key={firstRowEmployee.companyId} className="department-column">
+              {renderEmployeeNode(firstRowEmployee)} {/* 부서장 */}
+              <div className="second-row">
+                {getSubordinates(firstRowEmployee.companyId).length > 0 ? (
+                  getSubordinates(firstRowEmployee.companyId).map((secondRowEmployee) => (
+                    <div key={secondRowEmployee.companyId} className="subordinate">
+                      {renderEmployeeNode(secondRowEmployee)} {/* 팀장 */}
+                      <div className="third-row">
+                        {getSubordinates(secondRowEmployee.companyId).map((thirdRowEmployee) => (
+                          <div key={thirdRowEmployee.companyId}>
+                            {renderEmployeeNode(thirdRowEmployee)} {/* 팀원 */}
+                            <div className="fourth-row">
+                              {/* 304, 404, 504, 604 표시 */}
+                              {getSubordinates(thirdRowEmployee.companyId).map((fourthRowEmployee) => (
+                                <div key={fourthRowEmployee.companyId}>
+                                  {renderEmployeeNode(fourthRowEmployee)} {/* 4번째 팀원 */}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p></p> // 하위 직원이 없는 경우 표시
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
