@@ -1,8 +1,7 @@
-// src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LoginPage.css';
-import axios from 'axios';
+import axiosInstance from '../interceptors/axiosInterceptor'; // axiosInstance import
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -21,13 +20,14 @@ const LoginPage = () => {
     form.append('password', password);
 
     try {
-      const res = await axios.post('http://localhost:8080/api/member/login', form, header);
+      const res = await axiosInstance.post('http://localhost:8080/api/member/login', form, header);
       const data = res.data;
       
       console.log("data : ", data);
       
-      if (data.accessToken) { // 로그인 성공 확인
+      if (data.accessToken && data.refreshToken) { // 로그인 성공 확인
         localStorage.setItem('jwt', data.accessToken); // JWT를 로컬 스토리지에 저장
+        localStorage.setItem('refreshToken', data.refreshToken); // refreshToken을 로컬 스토리지에 저장
         localStorage.setItem('empID', username); // empID를 로컬 스토리지에 저장
         navigate('/dashboard'); // 대시보드로 리디렉션
       } else {
