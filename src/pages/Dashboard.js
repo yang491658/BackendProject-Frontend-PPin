@@ -117,36 +117,33 @@ const Dashboard = () => {
 
   const getUserInfo = async () => {
     const token = localStorage.getItem('jwt');
+    const empID = localStorage.getItem('empID'); // empID 가져오기
 
     try {
-      const employeeResponse = await axios.get('http://localhost:8080/employee/all', {
+      // 1. 특정 empID에 대한 직원 정보 가져오기
+      const employeeResponse = await axios.get(`http://localhost:8080/employee/${empID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const allEmployees = employeeResponse.data;
-      const currentUser = allEmployees.find(emp => emp.empID === localStorage.getItem('empID'));
+      const { companyId, name } = employeeResponse.data; // 직원 정보에서 companyId와 이름 가져오기
+      setUserName(name); // 사용자 이름 설정
 
-      if (currentUser) {
-        const { companyId } = currentUser;
+      // 2. 회사 정보 가져오기
+      const companyResponse = await axios.get(`http://localhost:8080/employee/companies`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        const companyResponse = await axios.get(`http://localhost:8080/employee/companies`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const companyData = companyResponse.data.find(company => company.cnb === companyId);
 
-        const companyData = companyResponse.data.find(company => company.cnb === companyId);
-
-        if (companyData) {
-          setUserDepartment(companyData.department);
-          setUserRole(companyData.position);
-        }
-
-        setUserName(currentUser.name);
+      if (companyData) {
+        setUserDepartment(companyData.department); // 부서 설정
+        setUserRole(companyData.position); // 직급 설정
       } else {
-        console.error('현재 사용자를 찾을 수 없습니다.');
+        console.error('회사를 찾을 수 없습니다.');
       }
     } catch (error) {
       if (error.response) {

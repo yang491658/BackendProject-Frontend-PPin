@@ -55,5 +55,21 @@
 }
 
 .today-cell {
-  background-color: yellow; /* 오늘 날짜 칸 배경색을 노란색으로 변경 */
+  background-color: orange; /* 오늘 날짜 칸 배경색을 노란색으로 변경 */
+}
+
+/* 1. 입사일 이전 셀 회색 */
+.hire-date-cell {
+  background-color: gray;
+  border: 1px solid gray;
+}
+
+/* 2. 출근 시간이 9:00 이후이면 노란 배경색 */
+.late-clock-in {
+  background-color: yellow;
+}
+
+/* 3. 퇴근 시간이 18시 이전이면 초록 배경색 */
+.early-clock-out {
+  background-color: lightgreen;
 }

@@ -1,35 +1,60 @@
 .organization-chart {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
 }
 
-.employee-node {
-  margin: 10px;
+.ceo {
+  margin-bottom: 30px;
   text-align: center;
 }
 
-.employee-info {
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.subordinates-row {
+.first-row,
+.second-row,
+.third-row {
   display: flex;
-  justify-content: center; /* 수평 중앙 정렬 */
-  margin-top: 10px; /* 각 줄 간격 */
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.subordinates {
-  display: flex; /* 하위 직원들을 가로로 나열 */
-  justify-content: center; /* 가로 중앙 정렬 */
-  margin-top: 10px; /* 팀장과 담당자 사이 간격 */
+.employee-node {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 0 10px;
+  text-align: center;
+  border-radius: 8px;
+  width: 200px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
 }
 
-.subordinate {
-  flex: 1; /* 동일한 너비로 나누기 */
-  margin: 0 10px; /* 하위 직원 간 간격 */
+.employee-info p {
+  margin: 5px 0;
+}
+
+.first-row .employee-node {
+  background-color: #e0f7fa; /* 부서장에게 다른 색상 */
+}
+
+.second-row .employee-node {
+  background-color: #ffecb3; /* 팀장에게 다른 색상 */
+}
+
+.third-row .employee-node {
+  background-color: #c8e6c9; /* 팀원에게 다른 색상 */
+}
+
+.fourth-row .employee-node {
+  background-color: #d4c8e6; /* 팀원에게 다른 색상 */
+}
+
+.second-and-third-rows {
+  margin-top: 20px;
+}
+
+.employee-node:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }

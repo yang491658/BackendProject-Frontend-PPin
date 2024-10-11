@@ -13,47 +13,39 @@ const MySalaryWidget = () => {
       const empID = localStorage.getItem('empID'); // empID 가져오기
 
       try {
-        // 1. 직원 정보를 가져오기
-        const employeeResponse = await axios.get(`http://localhost:8080/employee/all`, {
+        // 1. 특정 empID에 대한 직원 정보 가져오기
+        const employeeResponse = await axios.get(`http://localhost:8080/employee/${empID}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log('직원 정보:', employeeResponse.data); // 직원 정보 콘솔 로그
+        const { companyId, name } = employeeResponse.data; // empID에 해당하는 직원 정보
+        setUserName(name); // 사용자 이름 설정
 
-        const currentUser = employeeResponse.data.find(emp => emp.empID === empID);
+        // 2. 회사 정보를 가져오기
+        const companyResponse = await axios.get(`http://localhost:8080/employee/companies`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        if (currentUser) {
-          const { companyId, name } = currentUser; // 이름 추가로 가져오기
-          setUserName(name); // 사용자 이름 설정
+        console.log('회사 정보:', companyResponse.data); // 회사 정보 콘솔 로그
 
-          // 2. 회사 정보를 가져오기
-          const companyResponse = await axios.get(`http://localhost:8080/employee/companies`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+        const companyData = companyResponse.data.find(company => company.cnb === companyId);
 
-          console.log('회사 정보:', companyResponse.data); // 회사 정보 콘솔 로그
-
-          const companyData = companyResponse.data.find(company => company.cnb === companyId);
-
-          if (companyData) {
-            setSalary(companyData.baseSalary); // base_salary 설정
-            console.log('총 급여:', companyData.baseSalary); // 총 급여 콘솔 로그
-          } else {
-            console.error('회사를 찾을 수 없습니다.');
-          }
+        if (companyData) {
+          setSalary(companyData.baseSalary); // base_salary 설정
+          console.log('총 급여:', companyData.baseSalary); // 총 급여 콘솔 로그
         } else {
-          console.error('현재 사용자를 찾을 수 없습니다.');
+          console.error('회사를 찾을 수 없습니다.');
         }
       } catch (error) {
         console.error('급여 정보를 가져오는 중 오류 발생:', error.response ? error.response.data : error.message);
       }
     };
 
-    getSalaryInfo(); 
+    getSalaryInfo();
   }, []);
 
   return (
