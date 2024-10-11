@@ -28,6 +28,12 @@
   color: #61dafb;
 }
 
+/* 로그인 페이지에서는 margin-left 적용하지 않음 */
+body.login-page {
+  margin-left: 0 !important;
+}
+
+/* 다른 모든 페이지에서는 margin-left 60px 적용 */
 body {
   margin-left: 60px !important;
 }
