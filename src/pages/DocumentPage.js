@@ -7,6 +7,7 @@ import axios from "axios";
 const DocumentPage = () => {
   const navigate = useNavigate(); // navigate 함수 초기화
   const [documents, setDocuments] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // 오류 상태 추가
 
@@ -24,7 +25,7 @@ const DocumentPage = () => {
           "http://localhost:8080/api/documents/list",
           headers
         );
-        setDocuments(documentResponse.data); // 합쳐진 데이터를 상태에 설정
+        setDocuments(documentResponse.data); // 문서 데이터 설정
         setLoading(false);
       } catch (error) {
         console.error(error); // 오류를 콘솔에 로그
@@ -36,12 +37,38 @@ const DocumentPage = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const jwtToken = localStorage.getItem("jwt");
+      const headers = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      };
+      const employeeResponse = await axios.get(
+        "http://localhost:8080/employee/all",
+        headers
+      );
+      setEmployees(employeeResponse.data); // 직원 데이터 설정
+    };
+    fetchData();
+  }, []);
+
   // 문서 작성 페이지로 이동하는 함수
   const handleCreateDocument = () => {
     navigate("/documents/create"); // 문서 작성 페이지로 이동
   };
 
-  console.log(documents);
+  // 문서 작성 페이지로 이동하는 함수
+  const handleDocumentDetail = (dno) => {
+    navigate(`/documents/${dno}`); // 문서 작성 페이지로 이동
+  };
+
+  // writer와 enb가 일치하는 직원의 이름을 찾는 함수
+  const findEmployeeName = (writer) => {
+    const employee = employees.find((emp) => String(emp.enb) === writer);
+    return employee ? employee.name : writer; // 이름이 없으면 "알 수 없음" 출력
+  };
 
   return (
     <div className="document-page">
@@ -65,8 +92,14 @@ const DocumentPage = () => {
           <tbody>
             {documents.map((document) => (
               <tr key={document.dno}>
-                <td>{document.title}</td>
-                <td>{document.writer}</td>
+                <td
+                  className="document-title" // 스타일 적용을 위한 클래스 추가
+                  onClick={() => handleDocumentDetail(document.dno)}
+                >
+                  {document.title}
+                </td>
+                {/* writer와 employees의 enb가 같을 때 이름 출력 */}
+                <td>{findEmployeeName(document.writer)}</td>
                 <td>
                   {new Date() - new Date(document.createDate) <
                   24 * 60 * 60 * 60
