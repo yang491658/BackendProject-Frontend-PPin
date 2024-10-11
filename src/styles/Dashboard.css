@@ -2,8 +2,8 @@
   display: flex;
 }
 
-.user-info, .top-buttons{
-  padding: 10px;
+.user-info {
+  margin-left: 10px;
 }
 
 .add-widget-button {

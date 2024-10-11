@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LoginPage.css';
 import axiosInstance from '../interceptors/axiosInterceptor'; // axiosInstance import
@@ -8,6 +8,13 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.classList.add('login-page');
+    return () => {
+      document.body.classList.remove('login-page');
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
@@ -40,30 +47,35 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
-      <h2>로그인</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>아이디:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+    <div className="login-container">
+      <div className="login-box">
+        <h1>로그인</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="text"
+              placeholder="아이디"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <input type="submit" value="로그인" />
+          {error && <p className="error">아이디 또는 비밀번호가 잘못되었습니다.</p>}
+        </form>
+        <div className="forgot-password">
+          <a href="#">비밀번호를 잊으셨나요?</a>
         </div>
-        <div>
-          <label>비밀번호:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">로그인</button>
-        {error && <p className="error">아이디 또는 비밀번호가 잘못되었습니다.</p>}
-      </form>
+      </div>
     </div>
   );
 };

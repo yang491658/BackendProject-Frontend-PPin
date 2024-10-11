@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
@@ -10,9 +10,19 @@ import OrganizationChart from './pages/OrganizationChart';
 import SettingsPage from './pages/SettingPage';
 import AttendancePage from './pages/AttendancePage';
 
-import './App.css'; 
+import './App.css';
 
 const App = () => {
+  useEffect(() => {
+    // 로그인 상태 확인 로직 (여기서는 간단히 경로로 판단)
+    const isLoggedIn = window.location.pathname !== '/';
+    if (isLoggedIn) {
+      document.body.classList.add('logged-in-body');
+    } else {
+      document.body.classList.remove('logged-in-body');
+    }
+  }, [window.location.pathname]);
+
   return (
     <Router>
       <Routes>
